@@ -67,7 +67,8 @@ func main() {
 			fmt.Print("buy for CHF: ")
 			buy := readnum(scanner)
 			if buy <= 0.0 || buy > balanceCHF {
-				fmt.Printf("can't buy for %f CHF", buy)
+				fmt.Printf("can't buy for %f CHF\n", buy)
+				continue
 			}
 			mu.Lock()
 			balanceCHF -= buy
@@ -78,7 +79,8 @@ func main() {
 			fmt.Print("sell BTC: ")
 			sell := readnum(scanner)
 			if sell <= 0.0 || sell > balanceBTC {
-				fmt.Printf("can't sell %f BTC", sell)
+				fmt.Printf("can't sell %f BTC\n", sell)
+				continue
 			}
 			mu.Lock()
 			balanceBTC -= sell
