@@ -52,13 +52,16 @@ func main() {
 		fmt.Printf("Balance: %12.5f CHF\n", balanceCHF)
 		fmt.Printf("Balance: %12.5f BTC\n", balanceBTC)
 		fmt.Printf("Total:   %12.5f CHF (Δ %.2f)\n", currentTotal, currentTotal-initialTotal)
-		fmt.Println("enter [q]: quit, [b]: buy, [s]: sell")
+		fmt.Println("enter [b]: buy, [s]: sell, [q]: quit, [c]: calculate")
 		input := strings.ToLower(readline(scanner))
 		if len(input) == 0 {
 			continue
 		}
 		if strings.HasPrefix(input, "q") {
 			break
+		}
+		if strings.HasPrefix(input, "c") {
+			continue
 		}
 		if strings.HasPrefix(input, "b") {
 			fmt.Print("buy for CHF: ")
