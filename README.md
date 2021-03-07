@@ -25,6 +25,15 @@ seconds):
     BTC in CHF:  47014.57452 (Δ -22.11410)
     BTC in CHF:  46992.48120 (Δ -22.09332)
     BTC in CHF:  47036.68862 (Δ 44.20741)
+    
+For Windows Powershell use:
+    Get-Content -Path "rates.txt" -Wait
+    BTC in CHF:  47258.97921 (Î” -Inf)
+    BTC in CHF:  47125.35344 (Î” -133.62577)
+    BTC in CHF:  47214.35316 (Î” 88.99972)
+    BTC in CHF:  47147.57190 (Î” -66.78126)
+    BTC in CHF:  47125.35344 (Î” -22.21846)
+    BTC in CHF:  47103.15591 (Î” -22.19753)
 
 Then have fun trading:
 
