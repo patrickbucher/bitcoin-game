@@ -16,7 +16,7 @@ Second, start the game, indicating a file to write the exchange rates to:
     Balance:      0.00000 BTC
 
 
-Third, open a second terminal to `tail` the rates file to get updates (every 30
+Third, open a second terminal to `tail` the rates file to get updates (every 60
 seconds):
 
     $ tail -f rates.txt

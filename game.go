@@ -15,7 +15,7 @@ import (
 
 const (
 	startMoney = 100000.0
-	interval   = 30 * time.Second
+	interval   = 60 * time.Second
 )
 
 var (
