@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	startMoney = 100000.0
-	interval   = 60 * time.Second
+	startCHF      = 100000.0
+	startBTCRatio = 0.5
+	interval      = 60 * time.Second
 )
 
 var (
@@ -24,8 +25,8 @@ var (
 )
 
 func main() {
-	balanceCHF := startMoney
-	balanceBTC := 0.0
+	var initialTotal, currentTotal float64
+	balanceCHF := startCHF
 
 	if len(os.Args) < 2 {
 		log.Fatalf("usage: %s [rates file]", os.Args[0])
@@ -38,12 +39,19 @@ func main() {
 	}
 	fmt.Printf("use tail -f %s to see exchange rate updates\n", ratesPath)
 
-	scanner := bufio.NewScanner(os.Stdin)
-	go updateRate(interval, ratesFile)
+	ready := make(chan struct{})
+	go updateRate(interval, ratesFile, ready)
+	<-ready
+	balanceBTC := (startCHF * startBTCRatio) * chfInBTC // buy bitcoin for half of the funds
+	balanceCHF *= startBTCRatio
+	initialTotal = balanceCHF + balanceBTC*(1.0/chfInBTC)
 
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
+		currentTotal = balanceCHF + balanceBTC*(1.0/chfInBTC)
 		fmt.Printf("Balance: %12.5f CHF\n", balanceCHF)
 		fmt.Printf("Balance: %12.5f BTC\n", balanceBTC)
+		fmt.Printf("Total:   %12.5f CHF (Δ %.2f)\n", currentTotal, currentTotal-initialTotal)
 		fmt.Println("enter [q]: quit, [b]: buy, [s]: sell")
 		input := strings.ToLower(readline(scanner))
 		if len(input) == 0 {
@@ -96,7 +104,8 @@ func readline(scanner *bufio.Scanner) string {
 	return ""
 }
 
-func updateRate(interval time.Duration, output io.Writer) {
+func updateRate(interval time.Duration, output io.Writer, ready chan<- struct{}) {
+	wasReady := false
 	for {
 		mu.Lock()
 		oldBTCinCHF := 1.0 / chfInBTC
@@ -108,6 +117,10 @@ func updateRate(interval time.Duration, output io.Writer) {
 		}
 		newBTCinCHF := 1.0 / chfInBTC
 		mu.Unlock()
+		if !wasReady {
+			ready <- struct{}{}
+		}
+		wasReady = true
 		btcDiff := newBTCinCHF - oldBTCinCHF
 		fmt.Fprintf(output, "BTC in CHF: %12.5f (Δ %.5f)\n", 1.0/chfInBTC, btcDiff)
 		time.Sleep(interval)
